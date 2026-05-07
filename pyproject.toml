@@ -1,0 +1,40 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "opencellid-downloader"
+version = "0.1.0"
+description = "A Python library and CLI tool for downloading OpenCellID data."
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [
+    { name = "Isaac G." }
+]
+keywords = [
+    "opencellid",
+    "cell towers",
+    "geolocation",
+    "mcc",
+    "downloader",
+    "cli"
+]
+dependencies = [
+    "requests>=2.31.0",
+    "tqdm>=4.66.0",
+    "python-dotenv>=1.0.0"
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "build>=1.0.0",
+    "twine>=5.0.0"
+]
+
+[project.scripts]
+opencellid-download = "opencellid_downloader.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
