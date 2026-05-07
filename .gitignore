@@ -10,6 +10,9 @@ build/
 env/
 venv/
 
+# environment variables
+.env
+
 # Conda
 .conda/
 
