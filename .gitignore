@@ -13,6 +13,9 @@ venv/
 # environment variables
 .env
 
+# Downloaded data
+data/
+
 # Conda
 .conda/
 

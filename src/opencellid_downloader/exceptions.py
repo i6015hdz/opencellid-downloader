@@ -6,6 +6,10 @@ class MissingApiKeyError(OpenCellIdDownloaderError):
     """Raised when an API key is required but missing."""
 
 
+class InvalidMccError(OpenCellIdDownloaderError):
+    """Raised when an MCC code is invalid."""
+
+
 class CountryNotFoundError(OpenCellIdDownloaderError):
     """Raised when a country cannot be matched to an MCC code."""
 
