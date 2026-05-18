@@ -1,10 +1,15 @@
-from opencellid_downloader.utils import ensure_directory
-from opencellid_downloader.exceptions import InvalidMccError, MissingApiKeyError
-from opencellid_downloader.downloader import download_file
-from dotenv import load_dotenv
 import os
 from pathlib import Path
 from urllib.parse import urlencode
+
+
+from dotenv import load_dotenv
+
+from opencellid_downloader.utils import ensure_directory, extract_gzip_file
+
+from opencellid_downloader.exceptions import InvalidMccError, MissingApiKeyError
+from opencellid_downloader.downloader import download_file
+from opencellid_downloader.countries import get_mcc_codes
 
 
 class OpenCellIdClient:
@@ -68,9 +73,11 @@ class OpenCellIdClient:
     def download_mcc(
             self,
             mcc: int | str,
-            output_dir: str | Path = Path("data"),
+            output_dir: str | Path = "data",
             filename: str | None = None,
             show_progress: bool = True,
+            unzip: bool = False,
+            keep_compressed: bool = True,
     ) -> Path:
         """ Download OpenCellID data for a specific MCC code.
         args:
@@ -78,6 +85,8 @@ class OpenCellIdClient:
             output_dir: Folder where the downloaded file will be saved. Defaults to "data".
             filename: Optional custom filename for the downloaded file.
             show_progress: Whether to display a progress bar during download. Defaults to True.
+            unzip: Whether to extract the downloaded .csv.gz file.
+            keep_compressed: Whether to keep the original .csv.gz file after extraction.
 
             returns:
             path to the downloaded file.
@@ -89,8 +98,58 @@ class OpenCellIdClient:
         output_filename = filename or f"{mcc_string}.csv.gz"
         output_path = output_directory / output_filename
 
-        return download_file(
+        downloaded_path = download_file(
             url=url,
             output_path=output_path,
             show_progress=show_progress,
         )
+
+        if unzip:
+            return extract_gzip_file(
+                downloaded_path,
+                keep_compressed=keep_compressed,
+            )
+
+        return downloaded_path
+
+    def download_country(
+            self,
+            country: str,
+            output_dir: str | Path = "data",
+            show_progress: bool = True,
+            unzip: bool = False,
+            keep_compressed: bool = True,
+    ) -> list[Path]:
+        """ Download OpenCellID data for a specific country by name or alias.
+
+        Args:
+                country: Country name or alias, such as "Mexico", "MX", or "USA".
+                output_dir: Folder where downloaded files should be saved. Defaults to "data".
+                show_progress: Whether to display a tqdm progress bar during download.
+                unzip: Whether to extract downloaded .csv.gz files.
+                keep_compressed: Whether to keep original .csv.gz files after extraction.
+
+        Returns:
+            List of paths to the downloaded files for each MCC associated with the country.
+
+        Raises:
+            CountryNotFoundError: If the country name or alias is not recognized, valid or not supported.
+            MissingApiKeyError: If the API key is missing, not set or not available.
+            DownloadError: If there is an error during the download process, such as network issues or invalid responses.
+
+        """
+        mcc_codes = get_mcc_codes(country)
+
+        downloaded_files = []
+
+        for mcc in mcc_codes:
+            download_file = self.download_mcc(
+                mcc=mcc,
+                output_dir=output_dir,
+                show_progress=show_progress,
+                unzip=unzip,
+                keep_compressed=keep_compressed,
+            )
+            downloaded_files.append(download_file)
+
+        return downloaded_files

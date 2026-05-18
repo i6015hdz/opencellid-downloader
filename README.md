@@ -106,6 +106,54 @@ The file will be saved as:
 data/334.csv.gz
 ```
 
+### Download by country name
+
+```python
+from opencellid_downloader import OpenCellIdClient
+
+client = OpenCellIdClient()
+client.download_country("Mexico", output_dir="data")
+```
+
+This downloads the OpenCellID file for Mexico using its MCC code.
+
+### Download and unzip
+
+```python
+from opencellid_downloader import OpenCellIdClient
+
+client = OpenCellIdClient()
+client.download_country(
+    "Mexico",
+    output_dir="data",
+    unzip=True,
+    keep_compressed=True,
+)
+```
+
+This downloads:
+
+```text
+data/334.csv.gz
+```
+
+and extracts:
+
+```text
+data/334.csv
+```
+
+If you do not want to keep the compressed file, use:
+
+```python
+client.download_country(
+    "Mexico",
+    output_dir="data",
+    unzip=True,
+    keep_compressed=False,
+)
+```
+
 ## How Downloads Work
 
 The downloader uses streaming so large files are not loaded into memory all at once.
@@ -120,6 +168,9 @@ This helps prevent broken or incomplete files from appearing as valid downloads.
 - API key support through direct argument or `.env`
 - MCC download URL builder
 - Download by MCC code
+- Country name to MCC lookup
+- Download by country name
+- Auto-unzip for `.csv.gz` files
 - Streaming downloads with `requests`
 - Progress bar with `tqdm`
 - Temporary `.part` file handling
