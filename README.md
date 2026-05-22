@@ -1,23 +1,24 @@
 # OpenCellID Downloader
 
-A Python library and command-line tool for downloading OpenCellID data.
+A Python library and command-line tool for downloading OpenCellID data by MCC code or country name.
 
 ## Project Status
 
-This project is currently in early development.
+This project is currently in active development.
 
-Current Phase: Phase 2 — Core downloader functionality
+Current Phase: Phase 4 — Command-line interface functionality
 
 Current test status:
 
 ```bash
-10 passed
+32 passed
 ```
 
 ## Goals
 
 - Download OpenCellID data using an API key
-- Support full downloads and country-specific downloads
+- Support downloads by MCC code
+- Support downloads by country name
 - Provide a Python library interface
 - Provide a command-line interface
 - Support automatic `.csv.gz` extraction
@@ -70,6 +71,12 @@ The project includes `.env.example` as a safe template:
 OPENCELLID_API_KEY=your_api_key_here
 ```
 
+You can also pass a token directly through the CLI with:
+
+```bash
+opencellid-download Mexico --token YOUR_TOKEN
+```
+
 ## Python Usage
 
 ### Build a download URL
@@ -115,7 +122,7 @@ client = OpenCellIdClient()
 client.download_country("Mexico", output_dir="data")
 ```
 
-This downloads the OpenCellID file for Mexico using its MCC code.
+This downloads the OpenCellID file for Mexico using the country-to-MCC lookup helper.
 
 ### Download and unzip
 
@@ -154,6 +161,76 @@ client.download_country(
 )
 ```
 
+## Command-Line Usage
+
+After installing the package locally with:
+
+```bash
+pip install -e .
+```
+
+you can use the CLI command:
+
+```bash
+opencellid-download --help
+```
+
+### Download by country name
+
+```bash
+opencellid-download Mexico
+```
+
+This downloads OpenCellID data for Mexico using the country-to-MCC lookup helper.
+
+### Download by MCC code
+
+```bash
+opencellid-download 334 --by-mcc
+```
+
+This downloads OpenCellID data for MCC `334`.
+
+### Choose an output folder
+
+```bash
+opencellid-download Mexico --output data
+```
+
+### Use a token directly
+
+```bash
+opencellid-download Mexico --token YOUR_TOKEN
+```
+
+If `--token` is not provided, the package will try to read the token from:
+
+```env
+OPENCELLID_API_KEY=your_api_key_here
+```
+
+### Download and unzip
+
+```bash
+opencellid-download Mexico --unzip
+```
+
+This downloads the `.csv.gz` file and extracts it to `.csv`.
+
+### Download, unzip, and remove the compressed file
+
+```bash
+opencellid-download Mexico --unzip --remove-compressed
+```
+
+This keeps the extracted `.csv` file and removes the original `.csv.gz` file.
+
+### Download by MCC, unzip, and choose output folder
+
+```bash
+opencellid-download 334 --by-mcc --output data --unzip
+```
+
 ## How Downloads Work
 
 The downloader uses streaming so large files are not loaded into memory all at once.
@@ -169,22 +246,28 @@ This helps prevent broken or incomplete files from appearing as valid downloads.
 - MCC download URL builder
 - Download by MCC code
 - Country name to MCC lookup
+- Country aliases such as `MX`, `USA`, and `UK`
 - Download by country name
+- Support for countries with multiple MCC codes
 - Auto-unzip for `.csv.gz` files
+- Option to keep or remove compressed files after extraction
 - Streaming downloads with `requests`
 - Progress bar with `tqdm`
 - Temporary `.part` file handling
 - Custom exceptions
-- Basic pytest test suite
+- Command-line interface with `opencellid-download`
+- CLI support for country downloads
+- CLI support for MCC downloads
+- CLI support for `--output`, `--token`, `--unzip`, and `--remove-compressed`
+- Pytest test suite with mocked downloads and CLI tests
 
 ## Coming Soon
 
-- Download by country name
-- Country-to-MCC lookup helper
-- Auto-unzip for `.csv.gz` files
-- Command-line arguments
 - TestPyPI release
 - PyPI release
+- More complete country/MCC coverage
+- Improved documentation
+- Optional CI testing with GitHub Actions
 
 ## License
 
