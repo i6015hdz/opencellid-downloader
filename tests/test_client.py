@@ -36,7 +36,7 @@ def test_build_mcc_download_url():
 
     url = client.build_mcc_download_url(334)
 
-    assert "https://opencellid.org/downloads.php" in url
+    assert "https://opencellid.org/ocid/downloads" in url
     assert "token=fake-key" in url
     assert "type=mcc" in url
     assert "file=334.csv.gz" in url

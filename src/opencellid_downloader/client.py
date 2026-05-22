@@ -15,7 +15,7 @@ from opencellid_downloader.countries import get_mcc_codes
 class OpenCellIdClient:
     """Client for interacting with OpenCellID downloads."""
 
-    default_base_url = "https://opencellid.org/downloads.php"
+    default_base_url = "https://opencellid.org/ocid/downloads"
 
     def __init__(
             self,
