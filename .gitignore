@@ -1,23 +1,32 @@
-#Python
+# Python
 __pycache__/
 *.py[cod]
+*$py.class
 *.egg-info/
+.eggs/
 dist/
 build/
 
-# Virtual Environments
+# Test and coverage files
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Virtual environments
 .venv/
 env/
 venv/
 
-# environment variables
+# Conda
+.conda/
+
+# Environment variables
 .env
+.env.*
 
 # Downloaded data
 data/
-
-# Conda
-.conda/
+downloads/
 
 # Jupyter Notebook
 .ipynb_checkpoints/
